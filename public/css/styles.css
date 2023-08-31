@@ -17,3 +17,27 @@ h1 {
 .average {
     color: cornflowerblue;
 }
+
+table {
+    border-spacing: 0;
+    border-collapse: separate;
+    border: 1px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+tr:nth-child(even){background-color: #989898;}
+
+
+th {
+    padding: 10px;
+    color: #1b1b1b;
+    background-color: rgba(238, 255, 2, 0.511);
+    
+}
+
+td {
+    
+    padding: 8px;
+}
+

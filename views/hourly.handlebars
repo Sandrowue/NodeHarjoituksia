@@ -5,8 +5,63 @@
         <th>Tunti</th>
         <th>Hinta (snt/kWh)</th>
     </tr>
+    {{#each tableData}}
     <tr>
         <td>{{hour}}</td>
         <td>{{price}}</td>
     </tr>
+    {{/each}}
 </table>
+
+<!-- Chart.js -->
+
+<div>
+    <canvas id="sähköhinta" style="width:80%;max-width:700px"></canvas> 
+</div>
+
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script> 
+<script>   
+    const xValues = [13, 14, 15, 16];
+    const yValues = [31.44, 32.1, 30.5, 29.99];
+    const barColors = "orange";
+
+    new Chart("sähköhinta", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Päivittäinen Sähköhinta"
+           
+            },
+            legend: {
+                display: true,
+                labels: {
+                    color: "orange",
+                    text: "euro"
+                }
+            }
+
+        }
+        
+    })
+</script>
+
+<!-- Plotly.js -->
+
+<script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
+
+<div id="plVersio" style="width:80%;max-width:700px"></div>
+
+
+
+
+
