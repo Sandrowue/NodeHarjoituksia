@@ -47,8 +47,23 @@ app.get('/hourly', (req, res) => {
         {'hour': 16,
         'price': 29.99}
     ] };
-    res.render('hourly', hourlyPageData)
+    
+    // Data will be presented in a bar chart. Data will be sent as JSON array to get it work on handlebars page
+    let tableHours = [13, 14, 15, 16]
+    let jsonTableHours = JSON.stringify(tableHours)
+    let tablePrices = [31.44, 32.1, 30.5, 29.99]
+    let jsonTablePrices = JSON.stringify(tablePrices)
+    let chartPageData = { 'chartHours': jsonTableHours, 'chartPrices': jsonTablePrices, 'forTable': hourlyPageData};
+
+
+    res.render('hourly', chartPageData)
 });
+
+app.get('/plotly', (req, res) => {
+    let tieto = ''
+
+    res.render('plotly', tieto)
+})
 
 // START THE LISTENER
 app.listen(PORT);

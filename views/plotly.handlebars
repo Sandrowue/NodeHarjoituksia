@@ -1,0 +1,22 @@
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<div id="plVersio" style="width:80%;max-width:700px"></div>
+
+
+<script>
+    const xValues = [13, 14, 15, 16];
+    const yValues = [31.44, 32.1, 30.5, 29.99];
+    const data = [
+        {
+            x: xValues,
+            y: yValues,
+            type: 'bar',
+            orientation: "v",
+            marker: { color: "rgba(0,0,255,0.6)" }
+    }];
+
+    const layout = { title: "Sähköhinta"};
+
+    Plotly.newPlot('plVersio', data, layout);
+</script>

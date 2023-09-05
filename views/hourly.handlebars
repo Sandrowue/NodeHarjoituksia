@@ -23,8 +23,10 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 </script> 
 <script>   
-    const xValues = [13, 14, 15, 16];
-    const yValues = [31.44, 32.1, 30.5, 29.99];
+    const xValues = {{chartHours}};
+    const yValues = {{chartPrices}};
+    // const xValues = [13, 14, 15, 16];
+    // const yValues = [31.44, 32.1, 30.5, 29.99];
     const barColors = "orange";
 
     new Chart("sähköhinta", {
@@ -56,12 +58,29 @@
     })
 </script>
 
-<!-- Plotly.js -->
 
-<script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <div id="plVersio" style="width:80%;max-width:700px"></div>
 
+<!-- Plotly.js -->
+
+<script>
+    const xArray = {{chartHours}};
+    const yArray = {{chartPrices}};
+    const data = [
+        {
+            x: xArray,
+            y: yArray,
+            type: 'bar',
+            orientation: "v",
+            marker: { color: "rgba(0,0,255,0.6)" }
+    }];
+
+    const layout = { title: "Sähköhinta"};
+
+    Plotly.newPlot('plVersio', data, layout);
+</script>
 
 
 
