@@ -1,0 +1,1 @@
+console.log('A minute is long when you wait!')
