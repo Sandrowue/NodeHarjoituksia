@@ -1,6 +1,5 @@
-const pg = require('pg');
-const Client = require('pg').Client;
-const Pool = require('pg').Pool;
+const Pool = require('pg-pool');
+
 
 const pool = new Pool({
     host: '192.168.196.10',
@@ -9,9 +8,19 @@ const pool = new Pool({
     user: 'postgres',
     password: 'helenium'
 });
-pool.connect();
 
-const result = pool.query('Select * from public.hourly_price');
-console.log(result);
+let sqlClause = 'Select * from public.hourly_price'
 
-pool.end();
+// Modern way using a function wiht async-await
+/*const price = async() => { const result = await pool.query(sqlClause);
+    return result.rows;}
+
+price().then((result) => {console.log(result)}).catch((e) => {console.log(e)})*/
+
+// Define the query returning an error message or resultset
+const priceEx2 = pool.query(sqlClause, (error, results) => {
+    if (error) {
+        throw error;
+    }
+    console.log(results);
+})

@@ -14,7 +14,13 @@ cron.schedule('1-59 * * * *', () => {
 
 const bree = new Bree({
     jobs: [{
-    name: 'process',
-    interval: '1m'}
-    ]})
+        name: 'process',
+        interval: '1m'},
+    {
+        name: 'next',
+        interval: '2m'
+    }
+    ]
+    })
 bree.start()
+
