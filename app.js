@@ -16,6 +16,9 @@ const {engine} = require('express-handlebars');
 
 // EXPRESS APPLICATION SETTINGS
 
+// Home made module to get current price
+const cprice = require('./getHomePageData')
+
 // Create the server
 const app = express();
 const PORT = process.env.Port || 8080;
@@ -32,14 +35,21 @@ app.set('view engine', 'handlebars');
 
 // Route to home page
 app.get('/', (req, res) => {
+    
     // Handlebars needs a key to show data on page, json is a good way to send it
     let homePageData = {
-        'price': 31.25,
-        'wind': 2,
-        'temperature': 18
+        'price': 0,
+        'wind': 0,
+        'temperature': 0
     };
-    // Render index.handlebars and send dynamic data to the page
-    res.render('index', homePageData)
+
+    cprice.getCurrentPrice().then((resultset) => {
+        console.log(resultset.rows[0])
+        homePageData.price = resultset.rows[0]['price']
+        // Render index.handlebars and send dynamic data to the page
+        res.render('index', homePageData)
+    })
+
 });
 // Route to hourly data page
 app.get('/hourly', (req, res) => {
