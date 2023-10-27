@@ -45,8 +45,8 @@ app.get('/', (req, res) => {
     };
 
     cprice.getCurrentPrice().then((resultset) => {
-        console.log(resultset.rows[0])
         homePageData.price = resultset.rows[0]['price']
+        console.log(homePageData.price)
         // Render index.handlebars and send dynamic data to the page
         res.render('index', homePageData)
     })
@@ -55,33 +55,61 @@ app.get('/', (req, res) => {
 // Route to hourly data page
 app.get('/hourly', (req, res) => {
     // Data will be presented in a table. To loop all rows we need a key for table and for column
-    
-
+        
     hprice.getHourlyPrice().then((resultset) => {
-        let tableData = resultset.rows
-        let hourlyPageData = {
+        var tableData = resultset.rows
+        var hourlyPageData = {
             'tableData': tableData
         };
-        res.render('hourly', hourlyPageData)
+        
+        let tableHours = [];
+        let tablePrices = [];
+
+        for (i in tableData) {
+            let hourStr = tableData[i]['hour'];
+            let hourNr = Number(hourStr)
+            tableHours.push(hourNr)
+
+            let priceNr = tableData[i]['price'];
+            tablePrices.push(priceNr)
+        }
+
+        let jsonTableHours = JSON.stringify(tableHours);
+        
+        let jsonTablePrices = JSON.stringify(tablePrices);
+        
+        let chartPageData = { 'chartHours': jsonTableHours, 'chartPrices': jsonTablePrices, 'tableData': tableData};
+        
+        res.render('hourly', chartPageData);
     })
     
-    // Data will be presented in a bar chart. Data will be sent as JSON array to get it work on handlebars page
-    /*let tableHours = [13, 14, 15, 16]
-    let jsonTableHours = JSON.stringify(tableHours)
-    let tablePrices = [31.44, 32.1, 30.5, 29.99]
-    let jsonTablePrices = JSON.stringify(tablePrices)
-    let chartPageData = { 'chartHours': jsonTableHours, 'chartPrices': jsonTablePrices, 'forTable': hourlyPageData};
-
-
-    res.render('hourly', chartPageData)*/
 });
 
 app.get('/plotly', (req, res) => {
-    let tieto = ''
+    hprice.getHourlyPrice().then((resultset) => {
+        var tableData = resultset.rows
+        
+        let tableHours = [];
+        let tablePrices = [];
 
-    res.render('plotly', tieto)
-});
+        for (i in tableData) {
+            let hourStr = tableData[i]['hour'];
+            let hourNr = Number(hourStr)
+            tableHours.push(hourNr)
 
+            let priceNr = tableData[i]['price'];
+            tablePrices.push(priceNr)
+        }
+
+        let jsonTableHours = JSON.stringify(tableHours);
+        
+        let jsonTablePrices = JSON.stringify(tablePrices);
+        
+        let chartPageData = { 'chartHours': jsonTableHours, 'chartPrices': jsonTablePrices};
+        
+        res.render('plotly', chartPageData)
+    });
+})
 
 // START THE LISTENER
 app.listen(PORT);

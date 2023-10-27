@@ -16,7 +16,7 @@ let lastFetchedDate = '1.1.2023';
 let message = '';
 const logFile = 'dataOperationsLog';
 
-cron.schedule('*/5 15 * * *', () => {
+cron.schedule('*/5 10 * * *', () => {
     try {
         let timestamp = new Date();
         let dateStr = timestamp.toLocaleDateString();
