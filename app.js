@@ -58,9 +58,6 @@ app.get('/hourly', (req, res) => {
         
     hprice.getHourlyPrice().then((resultset) => {
         var tableData = resultset.rows
-        var hourlyPageData = {
-            'tableData': tableData
-        };
         
         let tableHours = [];
         let tablePrices = [];
