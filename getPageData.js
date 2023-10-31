@@ -7,12 +7,17 @@ const pool = new Pool(
     database
 );
 
+const getCurrentPrice = async () => {
+    let resultset = await pool.query('SELECT price FROM public.current_prices');
+    return resultset;
+}
+
 const getHourlyPrice = async () => {
     let resultset = await pool.query('SELECT * FROM public.hourly_page');
     return resultset;
 }
 
-const getDay = async () => {
+/*const getDay = async () => {
     let resultset = await pool.query('SELECT day FROM public.hourly_page');
     return resultset;
 }
@@ -25,12 +30,13 @@ const getHour = async () => {
 const getPrice = async() => {
     let resultset = await pool.query('SELECT price FROM public.hourly_page');
     return resultset
-}
+}*/
 
 module.exports = {
+    getCurrentPrice,
     getHourlyPrice,
-    getDay,
+    /*getDay,
     getHour,
-    getPrice
+    getPrice*/
 }
 

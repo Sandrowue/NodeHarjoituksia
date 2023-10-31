@@ -17,8 +17,8 @@ const {engine} = require('express-handlebars');
 // EXPRESS APPLICATION SETTINGS
 
 // Home made module to get current price
-const cprice = require('./getHomePageData')
-const hprice = require('./getHourlyPageData')
+
+const hprice = require('./getPageData')
 
 // Create the server
 const app = express();
@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
         'temperature': 0
     };
 
-    cprice.getCurrentPrice().then((resultset) => {
+    hprice.getCurrentPrice().then((resultset) => {
         homePageData.price = resultset.rows[0]['price']
         console.log(homePageData.price)
         // Render index.handlebars and send dynamic data to the page
