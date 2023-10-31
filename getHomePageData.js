@@ -1,14 +1,13 @@
 // A Module to retrieve home page data form Postgresql server
 
-const Pool = require('pg').Pool; 
+const Pool = require('pg').Pool;
+const settings = require('./database_and_timer_settings.json');
 
-const pool = new Pool({
-    user: 'postgres',
-    password: 'helenium',
-    host: '192.168.196.10',
-    database: 'power_consumption_app',
-    port: '5432'
-});
+const database = settings.database; 
+
+const pool = new Pool(
+    database
+);
 
 const getCurrentPrice = async () => {
     let resultset = await pool.query('SELECT price FROM public.current_prices');

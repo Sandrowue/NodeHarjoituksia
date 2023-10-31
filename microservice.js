@@ -2,21 +2,21 @@ const Pool = require('pg').Pool;
 const cron = require('node-cron');
 const priceService = require('./priceService');
 const logger = require('./logger')
+const settings = require('./database_and_timer_settings.json');
 
-const pool = new Pool({
-    user: 'postgres',
-    password: 'helenium',
-    host: '192.168.196.10',
-    database: 'power_consumption_app',
-    port: '5432'
-});
+const database = settings.database;
+const timer = settings.timer;
+
+const pool = new Pool(
+    database
+);
 
 let lastFetchedDate = '1.1.2023';
 
 let message = '';
 const logFile = 'dataOperationsLog';
 
-cron.schedule('*/5 15 * * *', () => {
+cron.schedule(timer, () => {
     try {
         let timestamp = new Date();
         let dateStr = timestamp.toLocaleDateString();

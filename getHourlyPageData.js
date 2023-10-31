@@ -1,12 +1,11 @@
 const Pool = require('pg').Pool; 
+const settings = require('./database_and_timer_settings.json');
 
-const pool = new Pool({
-    user: 'postgres',
-    password: 'helenium',
-    host: '192.168.196.10',
-    database: 'power_consumption_app',
-    port: '5432'
-});
+const database = settings.database;
+
+const pool = new Pool(
+    database
+);
 
 const getHourlyPrice = async () => {
     let resultset = await pool.query('SELECT * FROM public.hourly_page');
