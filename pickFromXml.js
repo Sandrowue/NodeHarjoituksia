@@ -411,9 +411,9 @@ const template_resultlist = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesOb
 }
 ]
 
-const template_timeAndPlaceList = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation',
+const template_timeAndPlaceList = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gml:domainSet/gmlcov:SimpleMultiPoint',
 {
-    data: 'om:result'
+    data: 'gmlcov:positions'
 }
 ]
 
@@ -421,11 +421,18 @@ const xmlToObjectArray = async (xmlData, template) => {
     const result = await transform(xmlData, template);
     return result
 }
-
-/*xmlToObjectArray(xmlData, template_resultlist).then(result => {
-    console.log(result)
-})*/
-
-xmlToObjectArray(xmlData, template_timeAndPlaceList).then(result => {
-    console.log(result)
+let weather = ''
+xmlToObjectArray(xmlData, template_resultlist).then(result => {
+    weather = result
+    console.log(weather)
 })
+
+
+let timepoint = ''
+xmlToObjectArray(xmlData, template_timeAndPlaceList).then(result => {
+    timepoint = result
+    console.log(timepoint)
+})
+;
+weatherString = weatherData[0].data;
+console.log(weatherString)
