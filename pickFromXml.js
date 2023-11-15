@@ -1,5 +1,13 @@
 const { transform, prettyPrint } = require('camaro');
 
+class WeatherObject {
+    constructor(temperature, windSpeed, windDirection) {
+        this.temperature = temperature;
+        this.windSpeed = windSpeed;
+        this.windDirection = windDirection;
+    }
+}
+
 const xmlData = `
 <?xml version="1.0" encoding="UTF-8"?>
 <wfs:FeatureCollection
@@ -421,18 +429,53 @@ const xmlToObjectArray = async (xmlData, template) => {
     const result = await transform(xmlData, template);
     return result
 }
-let weather = ''
+
+// Define an empty array for the dato to be sent to the database
+let weatherDataToDb = [];
+
+let weatherData = ''; 
+
 xmlToObjectArray(xmlData, template_resultlist).then(result => {
-    weather = result
-    console.log(weather)
+    weatherData = result;
+    console.log(weatherData);
+    weatherString = weatherData[0].data;
+
+    // Data must be splitted to rows and column values
+    const cutMark1 = '\n';
+    const cutMark2 = ' ';
+
+    // Data has been dumped as text containing lots of whitespace, therefore it must be trimmed
+    const trimmedWDRows = [];
+    const wDRows = weatherString.split(cutMark1);
+
+    wDRows.forEach(element => {
+        trimmedElement = element.trim();
+        trimmedWDRows.push(trimmedElement);
+    });
+
+    // Let's remove the 1st element because it is empty
+    trimmedWDRows.shift();
+
+    // there is an empty element at the end of array, remove it also
+    trimmedWDRows.pop();
+
+    // Loop the trimmed array element by element
+    trimmedWDRows.forEach(element => {
+        let valueOfInterest = element.split(cutMark2);
+        let windDirection = Number(valueOfInterest[0]);
+        let windSpeed = Number(valueOfInterest[1]);
+        let temperature = Number(valueOfInterest[2]);
+        
+        // Create a new object to add values to an array as an object
+        let objToAdd = new WeatherObject(temperature, windSpeed, windDirection);
+        weatherDataToDb.push(objToAdd)
+    });
 })
 
+console.log(weatherDataToDb);
 
 let timepoint = ''
 xmlToObjectArray(xmlData, template_timeAndPlaceList).then(result => {
     timepoint = result
     console.log(timepoint)
 })
-;
-weatherString = weatherData[0].data;
-console.log(weatherString)
