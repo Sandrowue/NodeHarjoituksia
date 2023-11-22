@@ -1,13 +1,5 @@
 const { transform, prettyPrint } = require('camaro');
 
-class WeatherObject {
-    constructor(temperature, windSpeed, windDirection) {
-        this.temperature = temperature;
-        this.windSpeed = windSpeed;
-        this.windDirection = windDirection;
-    }
-}
-
 const xmlData = `
 <?xml version="1.0" encoding="UTF-8"?>
 <wfs:FeatureCollection
@@ -425,19 +417,30 @@ const template_timeAndPlaceList = ['wfs:FeatureCollection/wfs:member/omso:GridSe
 }
 ]
 
+class ObservationData {
+    constructor(temperature, wind_speed, wind_direction) {
+        this.temperature = temperature;
+        this.wind_speed = wind_speed;
+        this.wind_direction = wind_direction;
+    }
+}
+
+class ObservationTimeAndPlace {
+    constructor(latitude, longitude, timestamp) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.timestamp = timestamp;
+    }
+}
+
 const xmlToObjectArray = async (xmlData, template) => {
     const result = await transform(xmlData, template);
     return result
 }
 
-// Define an empty array for the dato to be sent to the database
-let weatherDataToDb = [];
-
-let weatherData = ''; 
-
 xmlToObjectArray(xmlData, template_resultlist).then(result => {
+    let weatherDataToDb = [];
     weatherData = result;
-    console.log(weatherData);
     weatherString = weatherData[0].data;
 
     // Data must be splitted to rows and column values
@@ -445,37 +448,68 @@ xmlToObjectArray(xmlData, template_resultlist).then(result => {
     const cutMark2 = ' ';
 
     // Data has been dumped as text containing lots of whitespace, therefore it must be trimmed
-    const trimmedWDRows = [];
-    const wDRows = weatherString.split(cutMark1);
+    let trimmedWDRows = [];
+    let wDRows = weatherString.split(cutMark1);
 
     wDRows.forEach(element => {
         trimmedElement = element.trim();
         trimmedWDRows.push(trimmedElement);
     });
-
+    
     // Let's remove the 1st element because it is empty
     trimmedWDRows.shift();
-
+    
     // there is an empty element at the end of array, remove it also
     trimmedWDRows.pop();
-
+    
     // Loop the trimmed array element by element
     trimmedWDRows.forEach(element => {
         let valueOfInterest = element.split(cutMark2);
-        let windDirection = Number(valueOfInterest[0]);
-        let windSpeed = Number(valueOfInterest[1]);
+        let wind_direction = Number(valueOfInterest[0]);
+        let wind_speed = Number(valueOfInterest[1]);
         let temperature = Number(valueOfInterest[2]);
         
         // Create a new object to add values to an array as an object
-        let objToAdd = new WeatherObject(temperature, windSpeed, windDirection);
+        let objToAdd = new ObservationData(temperature, wind_speed, wind_direction);
         weatherDataToDb.push(objToAdd)
+        //console.log(weatherDataToDb);
     });
 })
 
-console.log(weatherDataToDb);
-
-let timepoint = ''
 xmlToObjectArray(xmlData, template_timeAndPlaceList).then(result => {
+    let timeAndPlaceToDb = [];
     timepoint = result
-    console.log(timepoint)
+    //console.log(timepoint)
+    timeAndPlatceString = timepoint[0].data
+    //console.log(timeAndPlatceString)
+
+    const cutMark1 = '\n';
+    const cutMark2 = ' ';
+
+    let trimmedTDRows = [];
+    let tDRows = timeAndPlatceString.split(cutMark1);
+    //console.log(tDRows)
+
+    tDRows.forEach(element => {
+        trimmedElement = element.trim();
+        trimmedTDRows.push(trimmedElement);
+    });
+    trimmedTDRows.shift();
+    trimmedTDRows.pop();
+    
+    //console.log(trimmedTDRows)
+
+    trimmedTDRows.forEach(element => {
+        let splittedElement = element.split(cutMark2);
+        splittedElement.splice(2, 1);
+        let valueOfInterest = splittedElement;
+        //console.log(valueOfInterest[0]);
+        let latitude = Number(valueOfInterest[0]);
+        let longitude = Number(valueOfInterest[1]);
+        let timestamp = Number(valueOfInterest[2]);
+
+        let objToAdd = new ObservationTimeAndPlace(latitude, longitude, timestamp);
+        timeAndPlaceToDb.push(objToAdd);
+        console.log(timeAndPlaceToDb)
+    })
 })

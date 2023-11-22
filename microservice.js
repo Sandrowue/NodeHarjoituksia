@@ -42,7 +42,7 @@ cron.schedule(timer, () => {
                             message = 'Added a row'
                         }
                         else {
-                            message = 'Sipped an existing row'
+                            message = 'Skipped an existing row'
                         }
                         console.log(message);
                         logger.add2log(message, logFile)
