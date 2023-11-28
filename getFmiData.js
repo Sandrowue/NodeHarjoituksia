@@ -17,23 +17,24 @@ const pool = new Pool(
 
 // A class for creating various weather objects containing URL and template
 class WeatherObservationTimeValue {
-    constructor(place, paremeterCode, parameterName) {
+    constructor(place, parameterCode, parameterName) {
         this.place = place;
-        this.parameterCode = paremeterCode;
+        this.parameterCode = parameterCode;
         this.parameterName = parameterName;
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
-        this.url = 'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=' +
-            this.place +
+        this.url =
+            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=' +
+            place +
             '&parameters=' +
-            this.parameterCode;
+            parameterCode;
 
-        // Constant XML path to the beginning of time-value-pair
+        // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
             'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
 
         // Names for the columns of the resultset
-        let names = { timeStamp: 'wml2:time', value: 'number(vml2:value)' };
+        let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
 
         // Change the name of the value key to the given parameter name
         names[this.parameterName] = names['value']
@@ -58,9 +59,38 @@ class WeatherObservationTimeValue {
         axios.request(this.axiosConfig).then((response) => {
             console.log(response.data)
         })
+            // A method to convert XML data to an array of objects
+    }           
+    
+    readAndConvertToArray() {
+        axios.request(this.axiosConfig).then((response) => {
+            transform(response.data, this.xmlTemplate).then((result) => {
+                console.log(result)
+                return result
+            })
+        })
+        
+    }
+    // A method to fetch and convert weather data and save it into a database
+    putTimeValuePairsToDb() {
+        
+        // Define the name of table to insert values which will be parameterName and _observation. Build correct table name.
+        let tableName = this.parameterName + '_observation';
+
+        // Build a SQL clause to insert data
+        const sqlClause = 'INSERT INTO public.' + tableName + 'VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
+
+        // Use Axios to fetch data from FMI
+        axios
+            .request(this.axiosConfig);
     }
 
 }
 
-test = new WeatherObservationTimeValue('Turku', 't2m', 'temerature');
-test.getFMIDataAsXML()
+
+
+const test = new WeatherObservationTimeValue('Turku', 't2m', 'temperature');
+test.readAndConvertToArray()
+// test.getFMIDataAsXML()
+
+
