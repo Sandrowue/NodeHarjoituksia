@@ -78,19 +78,66 @@ class WeatherObservationTimeValue {
         let tableName = this.parameterName + '_observation';
 
         // Build a SQL clause to insert data
-        const sqlClause = 'INSERT INTO public.' + tableName + 'VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
+        const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
 
         // Use Axios to fetch data from FMI
         axios
-            .request(this.axiosConfig);
-    }
+            .request(this.axiosConfig)
+            .then((response) => {
+                // If promise has been fulfilled convert data to an array
+                // XML is in the data portion (ie. body) of the response -> response.data
+                transform(response.data, this.xmlTemplate)
+                    .then((result) => {
+
+                        // Loop elements of the array
+                        result.forEach((element) => {
+
+                            // Create a vector for values
+                            let values = [element.timeStamp, element[this.parameterName], this.place]
+                            // console.log(values);
+
+                            // Define a function to run SQL clause
+                            const runQuery = async () => {
+                                let resultset = await pool.query(sqlClause, values);
+                                return resultset;
+                            }
+
+                            // Call query function and log status of operation
+                            runQuery().then((resultset) => {
+                                let message = '';
+
+                                if (resultset.rows[0] != undefined) {
+                                    message = 'Added a row' // The message when not undefined
+                                }
+                                else {
+                                    message = 'Skipped an existing row' // The message when undefined
+                                }
+
+                                // Log the result of insert operation
+                                console.log(message);
+                            })
+
+
+                        })
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            })
+    };
 
 }
 
 
 
 const test = new WeatherObservationTimeValue('Turku', 't2m', 'temperature');
-test.readAndConvertToArray()
+// test.readAndConvertToArray()
 // test.getFMIDataAsXML()
+test.putTimeValuePairsToDb()
+
+// temperature = parampeter Code 't2m'
+// tuulen nopeus m/s = 'ws_10min'
+// tuulen suunat asteina = 'wd_10min'
 
 
