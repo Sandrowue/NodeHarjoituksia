@@ -15,7 +15,7 @@ const pool = new Pool(
     database
 );
 
-// A class for creating various weather objects containing URL and template
+// A class for creating various weather observation objects containing URL and template
 class WeatherObservationTimeValue {
     constructor(place, parameterCode, parameterName) {
         this.place = place;
@@ -59,9 +59,9 @@ class WeatherObservationTimeValue {
         axios.request(this.axiosConfig).then((response) => {
             console.log(response.data)
         })
-            // A method to convert XML data to an array of objects
     }           
     
+    // A method to convert XML data to an array of objects
     readAndConvertToArray() {
         axios.request(this.axiosConfig).then((response) => {
             transform(response.data, this.xmlTemplate).then((result) => {
@@ -129,15 +129,14 @@ class WeatherObservationTimeValue {
 
 }
 
-
-
-const test = new WeatherObservationTimeValue('Turku', 't2m', 'temperature');
-// test.readAndConvertToArray()
+const test = new WeatherObservationTimeValue('Turku', 'wd_10min', 'wind_direction');
 // test.getFMIDataAsXML()
-test.putTimeValuePairsToDb()
+// test.readAndConvertToArray()
 
-// temperature = parampeter Code 't2m'
-// tuulen nopeus m/s = 'ws_10min'
-// tuulen suunat asteina = 'wd_10min'
+// temperature = parameter Code 't2m'
+// wind_speed m/s = 'ws_10min'
+// wind_direction asteina = 'wd_10min'
+// test.putTimeValuePairsToDb()
+
 
 
