@@ -129,9 +129,9 @@ class WeatherObservationTimeValue {
 
 }
 
-const test = new WeatherObservationTimeValue('Turku', 'wd_10min', 'wind_direction');
+const test = new WeatherObservationTimeValue('Turku', 't2m', 'temperature');
 // test.getFMIDataAsXML()
-// test.readAndConvertToArray()
+test.readAndConvertToArray()
 
 // temperature = parameter Code 't2m'
 // wind_speed m/s = 'ws_10min'
