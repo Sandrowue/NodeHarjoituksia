@@ -433,14 +433,39 @@ class ObservationTimeAndPlace {
     }
 }
 
+class FullWeatherData {
+    constructor(latitude, longitude, timestamp, temperature, wind_speed, wind_direction) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.timestamp = timestamp;
+        this.temperature = temperature;
+        this.wind_speed = wind_speed;
+        this.wind_direction = wind_direction;
+    }
+}
+
+const twoTemplateXmlToObjArr = async(xmlData, template1, template2) => {
+    const result1 = await transform(xmlData, template1);
+    const result2 = await transform(xmlData, template2);
+    let result = [result1, result2];
+    console.log(result)
+    return result
+}
+
 const xmlToObjectArray = async (xmlData, template) => {
     const result = await transform(xmlData, template);
     return result
 }
 
+twoTemplateXmlToObjArr(xmlData, template_timeAndPlaceList, template_resultlist).then(result => {
+    let allWeahterDataToDb = [];
+    weatherData = result;
+})
+
 xmlToObjectArray(xmlData, template_resultlist).then(result => {
     let weatherDataToDb = [];
     weatherData = result;
+    //console.log(weatherData)
     weatherString = weatherData[0].data;
 
     // Data must be splitted to rows and column values
@@ -510,6 +535,6 @@ xmlToObjectArray(xmlData, template_timeAndPlaceList).then(result => {
 
         let objToAdd = new ObservationTimeAndPlace(latitude, longitude, timestamp);
         timeAndPlaceToDb.push(objToAdd);
-        console.log(timeAndPlaceToDb)
+        //console.log(timeAndPlaceToDb)
     })
 })
