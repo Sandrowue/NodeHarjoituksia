@@ -459,14 +459,13 @@ const xmlToObjectArray = async (xmlData, template) => {
 
 twoTemplateXmlToObjArr(xmlData, template_timeAndPlaceList, template_resultlist).then(result => {
     let allWeahterDataToDb = [];
+    
     let timeData = result[0]
     let weatherData = result[1]
-    //console.log(timeData)
-    //console.log(weatherData)    
+        
     let timeDataString = timeData[0].data
     let weatherDataString = weatherData[0].data
-    //console.log(timeDataString)
-    //console.log(weatherDataString)
+   
     const cutMark1 = '\n';
     const cutMark2 = ' ';
     
@@ -478,7 +477,6 @@ twoTemplateXmlToObjArr(xmlData, template_timeAndPlaceList, template_resultlist).
     });
     trimmedTDRows.shift();
     trimmedTDRows.pop();
-    //console.log(trimmedTDRows.length)
    
     let trimmedWDRows = [];
     let wDRows = weatherDataString.split(cutMark1);
@@ -488,14 +486,12 @@ twoTemplateXmlToObjArr(xmlData, template_timeAndPlaceList, template_resultlist).
     });
     trimmedWDRows.shift();
     trimmedWDRows.pop();
-    //console.log(trimmedWDRows.length)
+    
     for (let i = 0; i < trimmedTDRows.length; i++) {
         let splittedTDRow = trimmedTDRows[i].split(cutMark2);
         splittedTDRow.splice(2, 1);
         let timeOfInterest = splittedTDRow;
-        //console.log(timeOfInterest)
         let weatherOfInterest = trimmedWDRows[i].split(cutMark2);
-        //console.log(weatherOfInterest)
         let latitude = Number(timeOfInterest[0]);
         let longitude = Number(timeOfInterest[1]);
         let timestamp = Number(timeOfInterest[2]);
