@@ -448,7 +448,7 @@ const twoTemplateXmlToObjArr = async(xmlData, template1, template2) => {
     const result1 = await transform(xmlData, template1);
     const result2 = await transform(xmlData, template2);
     let result = [result1, result2];
-    console.log(result)
+    //console.log(result)
     return result
 }
 
@@ -459,14 +459,63 @@ const xmlToObjectArray = async (xmlData, template) => {
 
 twoTemplateXmlToObjArr(xmlData, template_timeAndPlaceList, template_resultlist).then(result => {
     let allWeahterDataToDb = [];
-    weatherData = result;
+    let timeData = result[0]
+    let weatherData = result[1]
+    //console.log(timeData)
+    //console.log(weatherData)    
+    let timeDataString = timeData[0].data
+    let weatherDataString = weatherData[0].data
+    //console.log(timeDataString)
+    //console.log(weatherDataString)
+    const cutMark1 = '\n';
+    const cutMark2 = ' ';
+    
+    let trimmedTDRows = [];
+    let tDRows = timeDataString.split(cutMark1)
+    tDRows.forEach(element => {
+        trimmedElement = element.trim();
+        trimmedTDRows.push(trimmedElement);
+    });
+    trimmedTDRows.shift();
+    trimmedTDRows.pop();
+    //console.log(trimmedTDRows.length)
+   
+    let trimmedWDRows = [];
+    let wDRows = weatherDataString.split(cutMark1);
+    wDRows.forEach(element => {
+        trimmedElement = element.trim();
+        trimmedWDRows.push(trimmedElement);
+    });
+    trimmedWDRows.shift();
+    trimmedWDRows.pop();
+    //console.log(trimmedWDRows.length)
+    for (let i = 0; i < trimmedTDRows.length; i++) {
+        let splittedTDRow = trimmedTDRows[i].split(cutMark2);
+        splittedTDRow.splice(2, 1);
+        let timeOfInterest = splittedTDRow;
+        //console.log(timeOfInterest)
+        let weatherOfInterest = trimmedWDRows[i].split(cutMark2);
+        //console.log(weatherOfInterest)
+        let latitude = Number(timeOfInterest[0]);
+        let longitude = Number(timeOfInterest[1]);
+        let timestamp = Number(timeOfInterest[2]);
+        let wind_direction = Number(weatherOfInterest[0]);
+        let wind_speed = Number(weatherOfInterest[1]);
+        let temperature = Number(weatherOfInterest[2]);
+
+        let objToAdd = new FullWeatherData(latitude, longitude, timestamp, temperature, wind_speed, wind_direction)
+        allWeahterDataToDb.push(objToAdd)
+        console.log(allWeahterDataToDb)
+    }
+
 })
 
 xmlToObjectArray(xmlData, template_resultlist).then(result => {
     let weatherDataToDb = [];
-    weatherData = result;
+    let weatherData = result;
     //console.log(weatherData)
-    weatherString = weatherData[0].data;
+    let weatherString = weatherData[0].data;
+    //console.log(weatherString)
 
     // Data must be splitted to rows and column values
     const cutMark1 = '\n';
@@ -503,9 +552,9 @@ xmlToObjectArray(xmlData, template_resultlist).then(result => {
 
 xmlToObjectArray(xmlData, template_timeAndPlaceList).then(result => {
     let timeAndPlaceToDb = [];
-    timepoint = result
+    let timepoint = result
     //console.log(timepoint)
-    timeAndPlatceString = timepoint[0].data
+    let timeAndPlatceString = timepoint[0].data
     //console.log(timeAndPlatceString)
 
     const cutMark1 = '\n';
