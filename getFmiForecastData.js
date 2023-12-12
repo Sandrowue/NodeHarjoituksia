@@ -20,9 +20,9 @@ class WeatherForecastTimeValue {
 
         this.url =
             'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place='
-            + place +
+            + this.place +
             '&parameters=' +
-            parameterCode;
+            this.parameterCode;
 
         this.WFSPath =
             'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';

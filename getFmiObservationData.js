@@ -25,9 +25,9 @@ class WeatherObservationTimeValue {
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
             'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=' +
-            place +
+            this.place +
             '&parameters=' +
-            parameterCode;
+            this.parameterCode;
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
@@ -131,12 +131,12 @@ class WeatherObservationTimeValue {
 
 const test = new WeatherObservationTimeValue('Turku', 'wd_10min', 'wind_direction');
 // test.getFMIDataAsXML()
-// test.readAndConvertToArray()
+test.readAndConvertToArray()
 
 // temperature = parameter Code 't2m'
 // wind_speed m/s = 'ws_10min'
 // wind_direction asteina = 'wd_10min'
-test.putTimeValuePairsToDb()
+// test.putTimeValuePairsToDb()
 
 
 
